@@ -230,8 +230,20 @@ export default function Home() {
      });
   }, [results, minPrice, maxPrice, selectedBrands, selectedRating, selectedSpecs]);
 
+  const handleSearchModeChange = (mode: 'shopping' | 'flights' | 'trains') => {
+    setSearchMode(mode);
+    setQuery('');
+    setHasSearched(false);
+    setResults([]);
+    setFlightResults([]);
+    setTrainResults([]);
+    setFlightDeals([]);
+    setAutocompleteSuggestions([]);
+    setShowFilters(false);
+  };
+
   return (
-    <div className="min-h-screen pt-32 md:pt-44 pb-32 px-4 md:px-12 bg-transparent">
+    <div className="min-h-screen pt-32 md:pt-44 pb-32 px-4 md:px-12 bg-transparent font-mono">
       <div className="max-w-[1400px] mx-auto">
         <header className="mb-16 md:mb-24 relative pt-10">
           <div className="flex flex-col items-center text-center max-w-3xl mx-auto">
@@ -241,12 +253,12 @@ export default function Home() {
               transition={{ duration: 0.6, ease: "circOut" }}
               className="mb-6"
             >
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-600 text-xs font-bold uppercase tracking-wider mb-8">
-                <Sparkles size={14} /> Smart AI Shopping Assistant
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-sm bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold uppercase tracking-widest mb-8 shadow-[0_0_15px_rgba(16,185,129,0.2)]">
+                <Sparkles size={14} /> AI Shopping Node Active
               </div>
               <h1 className="massive-title mb-6">
-                Shop smarter with <br/>
-                <span className="brand-text">AI Intelligence.</span>
+                Terminal Access <br/>
+                <span className="brand-text">Granted.</span>
               </h1>
             </motion.div>
             
@@ -255,8 +267,8 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.6 }}
             >
-              <p className="text-lg md:text-xl text-gray-500 font-medium leading-relaxed">
-                Compare prices, summarize reviews, and find the absolute best deals across the internet in seconds.
+              <p className="text-lg md:text-xl text-slate-400 font-medium leading-relaxed tracking-wide">
+                Initialize market scan. Compare prices, extract reviews, and isolate the best deals globally.
               </p>
             </motion.div>
           </div>
@@ -269,13 +281,13 @@ export default function Home() {
             transition={{ delay: 0.4 }}
             className={`glass-panel p-2 flex flex-col md:flex-row items-stretch md:items-center overflow-visible ${loading ? 'opacity-50' : ''}`}
           >
-            <div className="flex space-x-1 p-2 md:p-0 md:pr-4 md:border-r border-gray-200">
+            <div className="flex space-x-1 p-2 md:p-0 md:pr-4 md:border-r border-slate-700">
               {(['shopping', 'flights', 'trains'] as const).map(mode => (
                 <button
                   key={mode}
-                  onClick={() => setSearchMode(mode)}
-                  className={`px-4 py-2.5 text-xs font-bold capitalize rounded-xl transition-all ${
-                    searchMode === mode ? 'bg-indigo-50 text-indigo-600 shadow-sm' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
+                  onClick={() => handleSearchModeChange(mode)}
+                  className={`px-4 py-2.5 text-[10px] uppercase tracking-widest font-bold rounded-sm transition-all ${
+                    searchMode === mode ? 'bg-emerald-500/20 text-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.3)] border border-emerald-500/50' : 'text-slate-400 hover:text-white hover:bg-slate-800 border border-transparent'
                   }`}
                 >
                   {mode}
@@ -284,25 +296,25 @@ export default function Home() {
             </div>
 
             <div className="relative flex-grow flex items-center h-14 md:h-16 px-4">
-              <Search className="mr-3 text-gray-400" size={20} />
+              <Search className="mr-3 text-emerald-500/50" size={20} />
               <input
                 type="text"
                 value={query}
                 onChange={(e) => handleQueryChange(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                placeholder={searchMode === 'shopping' ? "What are you looking for?" : "e.g. DEL to BOM"}
-                className="bg-transparent border-none outline-none text-gray-900 w-full text-lg font-semibold placeholder:text-gray-400 placeholder:font-medium"
+                placeholder={searchMode === 'shopping' ? "INPUT MARKET QUERY" : "e.g. DEL to BOM"}
+                className="bg-transparent border-none outline-none text-emerald-400 w-full text-lg font-bold placeholder:text-slate-600 uppercase tracking-widest"
               />
 
               {autocompleteSuggestions.length > 0 && (
-                <div className="absolute top-[calc(100%+10px)] left-0 w-full bg-white border border-gray-200 rounded-2xl shadow-xl z-50 overflow-hidden">
+                <div className="absolute top-[calc(100%+10px)] left-0 w-full bg-slate-900 border border-emerald-500/30 rounded-lg shadow-[0_0_20px_rgba(16,185,129,0.2)] z-50 overflow-hidden">
                   {autocompleteSuggestions.map((sug, i) => (
                     <button
                       key={i}
                       onClick={() => handleSuggestionClick(sug)}
-                      className="w-full text-left px-5 py-3 text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 text-sm font-medium flex items-center gap-3 border-b border-gray-100 last:border-b-0 transition-colors"
+                      className="w-full text-left px-5 py-3 text-slate-300 hover:bg-emerald-500/10 hover:text-emerald-400 text-sm font-bold flex items-center gap-3 border-b border-slate-800 last:border-b-0 transition-colors uppercase tracking-widest"
                     >
-                      <MapPin size={16} className="text-indigo-500" /> {sug.term || sug.id || sug.name}
+                      <MapPin size={16} className="text-emerald-500" /> {sug.term || sug.id || sug.name}
                     </button>
                   ))}
                 </div>
@@ -310,7 +322,7 @@ export default function Home() {
 
               <button
                 onClick={() => setIsScanning(true)}
-                className="ml-2 p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                className="ml-2 p-2 text-emerald-500/50 hover:text-emerald-400 hover:bg-emerald-500/10 rounded-sm transition-colors"
                 title="Scan Barcode"
               >
                 <Camera size={20} />
@@ -320,27 +332,27 @@ export default function Home() {
             <div className="flex h-14 md:h-16 p-2 md:p-0 gap-2">
               <button 
                 onClick={startVoiceSearch}
-                className={`w-12 md:w-14 flex items-center justify-center rounded-xl transition-all ${isListening ? 'bg-indigo-100 text-indigo-600 animate-pulse' : 'bg-gray-50 text-gray-500 hover:bg-gray-100'}`}
+                className={`w-12 md:w-14 flex items-center justify-center rounded-sm transition-all ${isListening ? 'bg-emerald-500 text-black animate-pulse shadow-[0_0_15px_rgba(16,185,129,0.5)]' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/20'}`}
               >
                 <Mic size={20} />
               </button>
               <button
                 onClick={() => handleSearch()}
                 disabled={loading}
-                className="btn-modern min-w-[120px] md:min-w-[160px] flex-grow md:flex-grow-0 h-full"
+                className="btn-modern min-w-[120px] md:min-w-[160px] flex-grow md:flex-grow-0 h-full text-[10px] md:text-xs"
               >
-                {loading ? <Loader2 className="animate-spin" size={20} /> : 'Search'}
+                {loading ? <Loader2 className="animate-spin" size={20} /> : 'INIT SEARCH'}
               </button>
             </div>
           </motion.div>
 
           {searchingStatus && (
-            <motion.div 
+              <motion.div 
               initial={{ opacity: 0 }} 
               animate={{ opacity: 1 }} 
-              className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-xs font-semibold text-indigo-600 flex items-center gap-2"
+              className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-[10px] font-bold text-emerald-400 flex items-center gap-2 uppercase tracking-widest"
             >
-              <Loader2 size={14} className="animate-spin" />
+              <Loader2 size={12} className="animate-spin" />
               {searchingStatus}
             </motion.div>
           )}
@@ -367,14 +379,14 @@ export default function Home() {
             >
               {searchMode === 'shopping' && (
                 <>
-                  <div className="mb-8 border border-white/10 bg-white/5 backdrop-blur-md rounded-xl overflow-hidden">
+                  <div className="mb-8 border border-emerald-500/20 bg-slate-900/50 backdrop-blur-md rounded-xl overflow-hidden shadow-[0_0_15px_rgba(16,185,129,0.05)]">
                     <button 
                       onClick={() => setShowFilters(!showFilters)}
-                      className="w-full flex items-center justify-between p-4 hover:bg-white/5 transition-colors"
+                      className="w-full flex items-center justify-between p-4 hover:bg-emerald-500/5 transition-colors"
                     >
-                      <div className="flex items-center gap-3 text-white">
-                        <SlidersHorizontal size={20} className={showFilters ? 'text-[#FF3B30]' : ''} />
-                        <span className="font-black tracking-widest text-sm uppercase">Advanced Analysis Filters</span>
+                      <div className="flex items-center gap-3 text-emerald-400">
+                        <SlidersHorizontal size={20} className={showFilters ? 'text-cyan-400' : ''} />
+                        <span className="font-bold tracking-widest text-xs uppercase">Filter Matrix</span>
                         {filteredResults.length !== results.length && (
                           <span className="ml-4 px-2 py-0.5 bg-[#FF3B30] text-white text-[10px] rounded-full font-black">
                             {filteredResults.length} / {results.length} MATCHES
@@ -392,53 +404,53 @@ export default function Home() {
                           exit={{ height: 0, opacity: 0 }}
                           className="border-t border-white/10"
                         >
-                          <div className="p-6 grid grid-cols-1 md:grid-cols-4 gap-8 text-white">
+                          <div className="p-6 grid grid-cols-1 md:grid-cols-4 gap-8 text-slate-300">
                             <div>
-                              <div className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
-                                <Tag size={12} /> Price Constraints (₹)
+                              <div className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
+                                <Tag size={12} className="text-emerald-500"/> Price Bounds (₹)
                               </div>
                               <div className="flex items-center gap-2">
-                                <input type="number" placeholder="MIN" value={minPrice} onChange={e => setMinPrice(e.target.value ? Number(e.target.value) : '')} className="w-full bg-black/40 border border-white/10 rounded px-3 py-2 text-xs outline-none focus:border-[#FF3B30]" />
-                                <span className="text-white/40">-</span>
-                                <input type="number" placeholder="MAX" value={maxPrice} onChange={e => setMaxPrice(e.target.value ? Number(e.target.value) : '')} className="w-full bg-black/40 border border-white/10 rounded px-3 py-2 text-xs outline-none focus:border-[#FF3B30]" />
+                                <input type="number" placeholder="MIN" value={minPrice} onChange={e => setMinPrice(e.target.value ? Number(e.target.value) : '')} className="w-full bg-slate-800 border border-emerald-500/20 rounded-sm px-3 py-2 text-xs outline-none focus:border-emerald-500 text-white placeholder:text-slate-600" />
+                                <span className="text-slate-600">-</span>
+                                <input type="number" placeholder="MAX" value={maxPrice} onChange={e => setMaxPrice(e.target.value ? Number(e.target.value) : '')} className="w-full bg-slate-800 border border-emerald-500/20 rounded-sm px-3 py-2 text-xs outline-none focus:border-emerald-500 text-white placeholder:text-slate-600" />
                               </div>
                             </div>
                             <div>
-                              <div className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
-                                <Filter size={12} /> Manufacturer Entity
+                              <div className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
+                                <Filter size={12} className="text-cyan-500"/> Entities
                               </div>
-                              <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto scrollbar-thin scrollbar-thumb-white/10">
+                              <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto scrollbar-thin scrollbar-thumb-emerald-500/20">
                                 {uniqueBrands.map(brand => (
-                                  <button key={brand} onClick={() => setSelectedBrands(prev => prev.includes(brand) ? prev.filter(b => b !== brand) : [...prev, brand])} className={`px-2 py-1 text-[10px] font-black tracking-widest rounded border transition-colors ${selectedBrands.includes(brand) ? 'bg-[#FF3B30] border-[#FF3B30] text-white' : 'bg-transparent border-white/20 text-white/70 hover:border-white/50'}`}>
+                                  <button key={brand} onClick={() => setSelectedBrands(prev => prev.includes(brand) ? prev.filter(b => b !== brand) : [...prev, brand])} className={`px-2 py-1 text-[10px] font-bold tracking-widest rounded-sm border transition-all ${selectedBrands.includes(brand) ? 'bg-cyan-500/20 border-cyan-500 text-cyan-400' : 'bg-slate-800/50 border-slate-700 text-slate-400 hover:border-slate-500'}`}>
                                     {brand}
                                   </button>
                                 ))}
                               </div>
                             </div>
                             <div>
-                              <div className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
-                                <Star size={12} /> Seller Reliability
+                              <div className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
+                                <Star size={12} className="text-yellow-500"/> Trust Score
                               </div>
                               <div className="flex flex-col gap-2">
                                 {[4.5, 4.0, 3.0].map(rating => (
-                                  <button key={rating} onClick={() => setSelectedRating(prev => prev === rating ? 0 : rating)} className={`flex items-center gap-2 text-xs transition-colors ${selectedRating === rating ? 'text-[#FF3B30] font-bold' : 'text-white/70 hover:text-white'}`}>
-                                    <div className={`w-3 h-3 border rounded-sm flex items-center justify-center ${selectedRating === rating ? 'bg-[#FF3B30] border-[#FF3B30]' : 'border-white/20'}`}>
-                                      {selectedRating === rating && <Check size={10} className="text-white" />}
+                                  <button key={rating} onClick={() => setSelectedRating(prev => prev === rating ? 0 : rating)} className={`flex items-center gap-2 text-[10px] uppercase font-bold tracking-widest transition-colors ${selectedRating === rating ? 'text-yellow-400' : 'text-slate-400 hover:text-slate-300'}`}>
+                                    <div className={`w-3 h-3 border rounded-sm flex items-center justify-center ${selectedRating === rating ? 'bg-yellow-500/20 border-yellow-500' : 'border-slate-600'}`}>
+                                      {selectedRating === rating && <Check size={10} className="text-yellow-500" />}
                                     </div>
-                                    {rating}+ Stars & Up
+                                    {rating}+ Level
                                   </button>
                                 ))}
                               </div>
                             </div>
                             <div>
-                              <div className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
-                                <Zap size={12} /> Extracted Specs
+                              <div className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
+                                <Zap size={12} className="text-emerald-500"/> Metadata
                               </div>
-                              <div className="flex flex-col gap-2 max-h-32 overflow-y-auto scrollbar-thin scrollbar-thumb-white/10">
+                              <div className="flex flex-col gap-2 max-h-32 overflow-y-auto scrollbar-thin scrollbar-thumb-emerald-500/20">
                                 {allSpecs.map(spec => (
-                                  <button key={spec} onClick={() => setSelectedSpecs(prev => prev.includes(spec) ? prev.filter(s => s !== spec) : [...prev, spec])} className={`flex items-center gap-2 text-[10px] text-left transition-colors uppercase font-bold tracking-wider ${selectedSpecs.includes(spec) ? 'text-[#FF3B30]' : 'text-white/70 hover:text-white'}`}>
-                                    <div className={`w-3 h-3 flex-shrink-0 border rounded-[2px] flex items-center justify-center ${selectedSpecs.includes(spec) ? 'bg-[#FF3B30] border-[#FF3B30]' : 'border-white/20'}`}>
-                                      {selectedSpecs.includes(spec) && <Check size={10} className="text-white" />}
+                                  <button key={spec} onClick={() => setSelectedSpecs(prev => prev.includes(spec) ? prev.filter(s => s !== spec) : [...prev, spec])} className={`flex items-center gap-2 text-[10px] text-left transition-colors uppercase font-bold tracking-widest ${selectedSpecs.includes(spec) ? 'text-emerald-400' : 'text-slate-400 hover:text-slate-300'}`}>
+                                    <div className={`w-3 h-3 flex-shrink-0 border rounded-sm flex items-center justify-center ${selectedSpecs.includes(spec) ? 'bg-emerald-500/20 border-emerald-500' : 'border-slate-600'}`}>
+                                      {selectedSpecs.includes(spec) && <Check size={10} className="text-emerald-500" />}
                                     </div>
                                     {spec}
                                   </button>
@@ -453,8 +465,8 @@ export default function Home() {
 
                   <div className="flex items-center justify-between mb-8">
                     <div className="flex items-center gap-4">
-                      <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                      <h2 className="text-sm font-black text-white uppercase tracking-widest">
+                      <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.8)]"></span>
+                      <h2 className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">
                         {filteredResults.length} ASSETS ISOLATED
                       </h2>
                     </div>
@@ -570,20 +582,20 @@ export default function Home() {
                     <Tag className="text-indigo-600" size={20} />
                     <h2 className="text-xl font-bold text-gray-900 tracking-tight">Trending Deals Today</h2>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     {[
-                      { name: "iPhone 15 Pro", discount: "20% OFF", source: "Amazon", img: "📱" },
-                      { name: "Sony WH-1000XM5", discount: "₹5,000 Cashback", source: "Croma", img: "🎧" },
-                      { name: "Samsung Galaxy S24", discount: "Lowest Price", source: "Flipkart", img: "📲" },
-                      { name: "MacBook Air M3", discount: "Student Offer", source: "Reliance", img: "💻" }
+                      { name: "Terminal Hack 15", discount: "SYSTEM BREACH", source: "DarkNet", img: "💻" },
+                      { name: "Cyber Deck XM5", discount: "NODE UNLOCKED", source: "Nexus", img: "🎧" },
+                      { name: "Neural Link S24", discount: "0-DAY EXPLOIT", source: "Grid", img: "🧠" },
+                      { name: "Quantum Core M3", discount: "ROOT ACCESS", source: "Syndicate", img: "⚡" }
                     ].map((deal, i) => (
-                      <div key={i} onClick={() => { setQuery(deal.name); handleSearch(undefined, deal.name); }} className="glass-panel p-5 cursor-pointer group hover:-translate-y-1">
-                        <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+                      <div key={i} onClick={() => { setQuery(deal.name); handleSearch(undefined, deal.name); }} className="glass-panel p-5 cursor-pointer group hover:-translate-y-1 bg-slate-900/40">
+                        <div className="w-12 h-12 bg-emerald-500/10 border border-emerald-500/30 rounded-lg flex items-center justify-center text-2xl mb-4 group-hover:bg-emerald-500/20 transition-all shadow-[0_0_10px_rgba(16,185,129,0.1)]">
                           {deal.img}
                         </div>
-                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">{deal.source}</p>
-                        <p className="text-base font-bold text-gray-900 mb-3 truncate">{deal.name}</p>
-                        <span className="inline-block px-2.5 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-lg">{deal.discount}</span>
+                        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">{deal.source}</p>
+                        <p className="text-sm font-bold text-slate-200 mb-3 truncate">{deal.name}</p>
+                        <span className="inline-block px-2.5 py-1 bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-[10px] uppercase font-bold tracking-widest rounded-sm">{deal.discount}</span>
                       </div>
                     ))}
                   </div>
@@ -602,12 +614,12 @@ export default function Home() {
 
       <ChatAssistant results={filteredResults} />
 
-      <footer className="w-full py-8 border-t border-gray-200 mt-20 flex flex-col md:flex-row items-center justify-between text-sm text-gray-500 font-medium px-4 md:px-16 bg-white/50 backdrop-blur-md">
-        <div>&copy; {new Date().getFullYear()} BuyWise. All rights reserved.</div>
+      <footer className="w-full py-8 border-t border-emerald-500/20 mt-20 flex flex-col md:flex-row items-center justify-between text-[10px] uppercase tracking-widest text-slate-500 font-bold px-4 md:px-16 bg-[#020617]/50 backdrop-blur-md">
+        <div>&copy; {new Date().getFullYear()} BuyHacket. All systems operational.</div>
         <div className="flex flex-wrap justify-center gap-6 mt-4 md:mt-0">
-          <a href="#" className="hover:text-indigo-600 transition-colors">Privacy Policy</a>
-          <a href="#" className="hover:text-indigo-600 transition-colors">Terms of Service</a>
-          <a href="#" className="hover:text-indigo-600 transition-colors">Support</a>
+          <a href="#" className="hover:text-emerald-400 transition-colors">Data Privacy</a>
+          <a href="#" className="hover:text-emerald-400 transition-colors">Protocols</a>
+          <a href="#" className="hover:text-emerald-400 transition-colors">Root Access</a>
         </div>
       </footer>
 

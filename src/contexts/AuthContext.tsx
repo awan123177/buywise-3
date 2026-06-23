@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from 'firebase/auth';
+import toast from 'react-hot-toast';
 import { doc, setDoc, onSnapshot, getDoc } from 'firebase/firestore';
 import { auth, db } from '../lib/firebase';
 
@@ -90,8 +91,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           }, { merge: true });
         }
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error signing in with Google:", error);
+      toast.error(error.message || "Authentication failed. Check Firebase config.");
     }
   };
 

@@ -12,48 +12,69 @@ function CameraRig({ mouse }: { mouse: React.MutableRefObject<{ x: number, y: nu
   return null;
 }
 
-function FloatingOrbs() {
-  const group = useRef<THREE.Group>(null!);
+function DataMatrix() {
+  const mesh = useRef<THREE.Points>(null!);
+  const count = 2000;
 
-  const orbs = useMemo(() => {
-    return Array.from({ length: 15 }).map(() => ({
-      position: [
-        (Math.random() - 0.5) * 20,
-        (Math.random() - 0.5) * 20,
-        (Math.random() - 0.5) * 10 - 5
-      ] as [number, number, number],
-      scale: Math.random() * 2 + 1,
-      color: Math.random() > 0.5 ? '#e0e7ff' : '#f3e8ff', // Indigo-100 or Purple-100
-      speed: Math.random() * 0.5 + 0.1
-    }));
+  const [positions, colors] = useMemo(() => {
+    const positions = new Float32Array(count * 3);
+    const colors = new Float32Array(count * 3);
+    const color = new THREE.Color();
+
+    for (let i = 0; i < count; i++) {
+      positions[i * 3] = (Math.random() - 0.5) * 40;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 40;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 40;
+
+      // Emerald green shades
+      color.setHSL(0.4 + Math.random() * 0.1, 1.0, 0.4 + Math.random() * 0.2);
+      colors[i * 3] = color.r;
+      colors[i * 3 + 1] = color.g;
+      colors[i * 3 + 2] = color.b;
+    }
+    return [positions, colors];
   }, []);
 
   useFrame((state) => {
     const time = state.clock.getElapsedTime();
+    if (mesh.current) {
+      mesh.current.rotation.y = time * 0.05;
+      mesh.current.rotation.x = time * 0.02;
+    }
+  });
+
+  return (
+    <points ref={mesh}>
+      <bufferGeometry>
+        <bufferAttribute attach="attributes-position" count={positions.length / 3} array={positions} itemSize={3} />
+        <bufferAttribute attach="attributes-color" count={colors.length / 3} array={colors} itemSize={3} />
+      </bufferGeometry>
+      <pointsMaterial size={0.08} vertexColors transparent opacity={0.6} sizeAttenuation={true} blending={THREE.AdditiveBlending} />
+    </points>
+  );
+}
+
+function CyberGlobe() {
+  const group = useRef<THREE.Group>(null!);
+  
+  useFrame((state) => {
+    const time = state.clock.getElapsedTime();
     if (group.current) {
-      group.current.children.forEach((child, i) => {
-        child.position.y += Math.sin(time * orbs[i].speed + i) * 0.01;
-        child.rotation.x += 0.005;
-        child.rotation.y += 0.005;
-      });
+      group.current.rotation.y = time * 0.1;
+      group.current.rotation.x = time * 0.05;
     }
   });
 
   return (
     <group ref={group}>
-      {orbs.map((orb, i) => (
-        <mesh key={i} position={orb.position} scale={orb.scale}>
-          <sphereGeometry args={[1, 32, 32]} />
-          <meshPhysicalMaterial 
-            color={orb.color} 
-            transparent 
-            opacity={0.4} 
-            roughness={0.1} 
-            transmission={0.9} 
-            thickness={1} 
-          />
-        </mesh>
-      ))}
+      <mesh>
+        <icosahedronGeometry args={[8, 2]} />
+        <meshBasicMaterial color="#10b981" wireframe transparent opacity={0.15} />
+      </mesh>
+      <mesh>
+        <icosahedronGeometry args={[8.5, 1]} />
+        <meshBasicMaterial color="#047857" wireframe transparent opacity={0.1} />
+      </mesh>
     </group>
   );
 }
@@ -71,19 +92,17 @@ export default function ThreeBackground() {
   }, []);
 
   return (
-    <div className="fixed inset-0 -z-10 bg-[#fafafa] overflow-hidden pointer-events-none">
-      <div className="absolute inset-0 z-0 opacity-60">
-        <Canvas camera={{ position: [0, 0, 10], fov: 60 }} dpr={[1, 2]}>
+    <div className="fixed inset-0 -z-10 bg-transparent overflow-hidden pointer-events-none">
+      <div className="absolute inset-0 z-0">
+        <Canvas camera={{ position: [0, 0, 15], fov: 60 }} dpr={[1, 2]}>
           <CameraRig mouse={mouse} />
-          <ambientLight intensity={1.5} color="#ffffff" />
-          <directionalLight position={[10, 10, 5]} intensity={1} color="#ffffff" />
-          <FloatingOrbs />
+          <DataMatrix />
+          <CyberGlobe />
         </Canvas>
       </div>
 
-      {/* Soft gradient overlay instead of heavy vignette */}
-      <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/40 via-transparent to-purple-50/40 z-20 pointer-events-none" />
-      <div className="absolute inset-0 z-30 pointer-events-none backdrop-blur-[60px] opacity-100"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-900/60 via-transparent to-slate-900/80 z-20 pointer-events-none mix-blend-multiply" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(16,185,129,0.05)_0%,rgba(0,0,0,0.5)_100%)] z-20 pointer-events-none"></div>
     </div>
   );
 }

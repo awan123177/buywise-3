@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "motion/react";
 import { ExternalLink, Star, Truck, TrendingDown, Check, Heart, Share2, Sparkles, Scale, LineChart, Tag, Diamond, Ticket } from "lucide-react";
 import Product3DViewer from "./Product3DViewer";
 import { useAuth } from "../contexts/AuthContext";
@@ -43,6 +43,36 @@ export default function ProductCard({
   const [showOffers, setShowOffers] = useState(false);
   const [coupons, setCoupons] = useState<any[]>([]);
   const [cashback, setCashback] = useState<any[]>([]);
+
+  // 3D Tilt Effect state
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  
+  const mouseXSpring = useSpring(x, { stiffness: 300, damping: 30 });
+  const mouseYSpring = useSpring(y, { stiffness: 300, damping: 30 });
+  
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["10deg", "-10deg"]);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-10deg", "10deg"]);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    
+    const xPct = mouseX / width - 0.5;
+    const yPct = mouseY / height - 0.5;
+    
+    x.set(xPct);
+    y.set(yPct);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+    setIsHovered(false);
+  };
 
   React.useEffect(() => {
     if (product?.source) {
@@ -163,29 +193,29 @@ export default function ProductCard({
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         className={`glass-panel p-0 flex flex-col gap-0 overflow-hidden ${
-          isBest ? "border-indigo-500 border-2 shadow-lg shadow-indigo-500/20" : ""
+          isBest ? "border-emerald-500 border-2 shadow-[0_0_20px_rgba(16,185,129,0.3)]" : ""
         }`}
       >
-        <div className="relative aspect-[4/5] bg-gray-100 animate-pulse flex items-center justify-center overflow-hidden border-b border-gray-200" />
+        <div className="relative aspect-[4/5] bg-slate-800/50 animate-pulse flex items-center justify-center overflow-hidden border-b border-emerald-500/20" />
 
-        <div className="p-5 flex flex-col gap-4 flex-grow bg-white">
-          <div className="flex items-center justify-between border-b border-gray-100 pb-3">
-            <div className="h-3 w-16 bg-gray-200 animate-pulse rounded-full" />
-            <div className="h-3 w-8 bg-gray-200 animate-pulse rounded-full" />
+        <div className="p-5 flex flex-col gap-4 flex-grow bg-slate-900/50">
+          <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+            <div className="h-3 w-16 bg-slate-800 animate-pulse rounded-sm" />
+            <div className="h-3 w-8 bg-slate-800 animate-pulse rounded-sm" />
           </div>
 
           <div className="space-y-2">
-            <div className="h-4 w-full bg-gray-200 animate-pulse rounded-full" />
-            <div className="h-4 w-2/3 bg-gray-200 animate-pulse rounded-full" />
+            <div className="h-4 w-full bg-slate-800 animate-pulse rounded-sm" />
+            <div className="h-4 w-2/3 bg-slate-800 animate-pulse rounded-sm" />
           </div>
 
           <div className="mt-auto pt-4 flex flex-col gap-6">
             <div className="flex flex-col gap-2">
-              <div className="h-8 w-24 bg-gray-200 animate-pulse rounded-full" />
-              <div className="h-3 w-32 bg-gray-200 animate-pulse rounded-full" />
+              <div className="h-8 w-24 bg-slate-800 animate-pulse rounded-sm" />
+              <div className="h-3 w-32 bg-slate-800 animate-pulse rounded-sm" />
             </div>
 
-            <div className="w-full h-12 bg-gray-200 animate-pulse rounded-xl" />
+            <div className="w-full h-12 bg-slate-800 animate-pulse rounded-sm" />
           </div>
         </div>
       </motion.div>
@@ -196,13 +226,30 @@ export default function ProductCard({
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      onMouseEnter={() => setIsHovered(true)}
+      style={{
+        rotateX,
+        rotateY,
+        transformStyle: "preserve-3d",
+      }}
       className={`glass-panel p-0 flex flex-col gap-0 overflow-hidden group transition-all duration-500 ${
         isBest
-          ? "border-indigo-500 border-2 shadow-lg shadow-indigo-500/20"
-          : "hover:border-indigo-300"
+          ? "border-emerald-500 border-2 shadow-[0_0_30px_rgba(16,185,129,0.3)]"
+          : "hover:border-emerald-500/50"
       }`}
     >
-      <div className="relative aspect-[4/5] bg-gray-50 flex items-center justify-center overflow-hidden border-b border-gray-200">
+      <div className="relative aspect-[4/5] bg-slate-900 flex items-center justify-center overflow-hidden border-b border-emerald-500/20">
+        <div className="absolute top-4 left-4 flex flex-col gap-1 z-20 pointer-events-none">
+          <span className="text-[9px] font-bold text-emerald-500/50 uppercase tracking-widest leading-none">
+            NODE_ID
+          </span>
+          <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-tighter leading-none">
+            BH-0{Math.floor(Math.random() * 900)}
+          </span>
+        </div>
+
         <div className="absolute inset-0 w-full h-full z-10 pointer-events-none">
           <Product3DViewer imageUrl={product.thumbnail} />
         </div>
@@ -212,30 +259,30 @@ export default function ProductCard({
           <img
             src={product.thumbnail}
             alt={product.title}
-            className="w-full h-full object-contain filter drop-shadow-xl transition-transform duration-700 ease-out group-hover:scale-105 group-hover:-translate-y-2"
+            className="w-full h-full object-contain filter drop-shadow-[0_0_15px_rgba(255,255,255,0.1)] transition-transform duration-700 ease-out group-hover:scale-105 group-hover:-translate-y-2 opacity-90 group-hover:opacity-100"
             referrerPolicy="no-referrer"
           />
         </div>
 
         {isBest && (
-          <div className="absolute top-0 right-0 bg-indigo-600 text-white text-[10px] font-bold uppercase px-3 py-1.5 shadow-md flex items-center gap-1 z-20 pointer-events-none rounded-bl-xl">
-            <Sparkles size={12}/> Top Pick
+          <div className="absolute top-0 right-0 bg-emerald-500 text-black text-[10px] font-bold uppercase px-3 py-1.5 shadow-[0_0_15px_rgba(16,185,129,0.5)] flex items-center gap-1 z-20 pointer-events-none rounded-bl-sm tracking-widest">
+            <Sparkles size={12}/> Root Pick
           </div>
         )}
       </div>
 
-      <div className="p-5 flex flex-col gap-3 flex-grow bg-white">
-        <div className="flex items-center justify-between border-b border-gray-100 pb-2">
-          <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">
+      <div className="p-5 flex flex-col gap-3 flex-grow bg-slate-900/60">
+        <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+          <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-[0.2em]">
             {product.source}
           </span>
-          <div className="flex items-center gap-1 text-xs text-amber-500 font-bold bg-amber-50 px-2 py-0.5 rounded-full">
-            <Star size={12} fill="currentColor" />
+          <div className="flex items-center gap-1 text-[10px] text-yellow-400 font-bold bg-yellow-400/10 border border-yellow-400/20 px-2 py-0.5 rounded-sm">
+            <Star size={10} fill="currentColor" />
             {product.rating || "4.5"}
           </div>
         </div>
 
-        <h3 className="text-sm font-bold text-gray-900 line-clamp-2 leading-snug">
+        <h3 className="text-sm font-bold text-slate-200 line-clamp-2 leading-snug tracking-wide uppercase">
           {product.title}
         </h3>
 
@@ -245,9 +292,9 @@ export default function ProductCard({
             {product.features.map((feat, idx) => (
               <div
                 key={idx}
-                className="flex items-center gap-2 text-[10px] font-medium text-gray-500 uppercase"
+                className="flex items-center gap-2 text-[9px] font-bold tracking-widest text-slate-400 uppercase"
               >
-                <Check size={10} className="text-indigo-500" />
+                <div className="w-1 h-1 bg-emerald-500" />
                 {feat}
               </div>
             ))}
@@ -257,17 +304,17 @@ export default function ProductCard({
         <div className="mt-auto pt-4 flex flex-col gap-4">
           <div className="flex flex-col gap-1">
             <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-extrabold text-gray-900 tracking-tight">
+              <span className="text-2xl font-bold text-white tracking-tighter">
                 {formatPrice(product.price)}
               </span>
               {product.old_price && (
-                <span className="text-xs text-gray-400 line-through font-medium">
+                <span className="text-[10px] text-slate-500 line-through font-bold">
                   {formatPrice(product.old_price)}
                 </span>
               )}
             </div>
-            <div className="text-[10px] text-green-600 font-bold flex items-center gap-1 uppercase bg-green-50 w-fit px-2 py-0.5 rounded">
-              <Truck size={12} />
+            <div className="text-[9px] text-emerald-400 font-bold flex items-center gap-1 uppercase bg-emerald-500/10 border border-emerald-500/30 w-fit px-2 py-0.5 rounded-sm tracking-widest">
+              <Truck size={10} />
               {product.delivery || "Fast Delivery"}
             </div>
           </div>
@@ -278,21 +325,21 @@ export default function ProductCard({
               onClick={() => setShowHistory(!showHistory)}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className={`py-2 px-3 text-xs font-bold transition-colors rounded-xl flex items-center justify-center gap-2 ${
-                showHistory ? "bg-gray-900 text-white shadow-md" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              className={`py-2 px-3 text-[10px] font-bold uppercase tracking-widest transition-colors rounded-sm border flex items-center justify-center gap-2 ${
+                showHistory ? "bg-[#FF3B30]/20 text-[#FF3B30] border-[#FF3B30]" : "border-slate-700 text-slate-300 hover:bg-slate-800"
               }`}
             >
-              <LineChart size={14} /> History
+              <LineChart size={12} /> History
             </motion.button>
             <motion.button
               onClick={() => setShowOffers(!showOffers)}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className={`py-2 px-3 text-xs font-bold transition-colors rounded-xl flex items-center justify-center gap-2 ${
-                showOffers ? "bg-green-500 text-white shadow-md" : "bg-green-50 text-green-700 hover:bg-green-100"
+              className={`py-2 px-3 text-[10px] font-bold uppercase tracking-widest transition-colors rounded-sm border flex items-center justify-center gap-2 ${
+                showOffers ? "bg-emerald-500/20 text-emerald-400 border-emerald-500" : "border-emerald-500/30 text-emerald-500 hover:bg-emerald-500/10"
               }`}
             >
-              <Ticket size={14} /> Offers {(coupons.length > 0 || cashback.length > 0) && `(${(coupons.length + cashback.length)})`}
+              <Ticket size={12} /> Offers {(coupons.length > 0 || cashback.length > 0) && `(${(coupons.length + cashback.length)})`}
             </motion.button>
           </div>
 
@@ -301,19 +348,19 @@ export default function ProductCard({
               onClick={() => handlePremiumFeature(() => onSummarize?.(product))}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="py-2 px-3 text-xs font-bold transition-colors rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 flex items-center justify-center gap-1.5"
+              className="py-2 px-3 text-[10px] font-bold uppercase tracking-widest transition-colors rounded-sm border border-cyan-500/30 bg-cyan-500/10 text-cyan-400 hover:bg-cyan-500 hover:text-black flex items-center justify-center gap-1.5"
             >
-              <Sparkles size={14} /> Summary
-              {!userData?.isPremium && <Diamond size={10} className="text-purple-500 ml-1" />}
+              <Sparkles size={12} /> Summary
+              {!userData?.isPremium && <Diamond size={10} className="text-cyan-400 ml-1" />}
             </motion.button>
             <motion.button
               onClick={() => handlePremiumFeature(() => onCompare?.(product))}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="py-2 px-3 text-xs font-bold transition-colors rounded-xl bg-purple-50 text-purple-600 hover:bg-purple-100 flex items-center justify-center gap-1.5"
+              className="py-2 px-3 text-[10px] font-bold uppercase tracking-widest transition-colors rounded-sm border border-purple-500/30 bg-purple-500/10 text-purple-400 hover:bg-purple-500 hover:text-white flex items-center justify-center gap-1.5"
             >
-              <Scale size={14} /> Compare
-              {!userData?.isPremium && <Diamond size={10} className="text-purple-500 ml-1" />}
+              <Scale size={12} /> Compare
+              {!userData?.isPremium && <Diamond size={10} className="text-purple-400 ml-1" />}
             </motion.button>
           </div>
 
@@ -340,25 +387,25 @@ export default function ProductCard({
               >
                 <div className="pt-2 pb-2 space-y-2">
                   {coupons.map((c, i) => (
-                    <div key={i} className="bg-green-50 border border-green-100 p-3 rounded-xl">
+                    <div key={i} className="bg-emerald-500/10 border border-emerald-500/20 p-3 rounded-sm">
                       <div className="flex justify-between items-center mb-1">
-                        <span className="text-xs font-bold text-green-700 flex items-center gap-1"><Tag size={12}/> {c.code}</span>
-                        <span className="text-xs font-bold text-gray-900">{c.discount}</span>
+                        <span className="text-[10px] font-bold text-emerald-400 tracking-widest uppercase flex items-center gap-1"><Tag size={12}/> {c.code}</span>
+                        <span className="text-[10px] font-bold text-white">{c.discount}</span>
                       </div>
-                      <p className="text-[10px] text-gray-600">{c.description}</p>
+                      <p className="text-[9px] text-slate-400">{c.description}</p>
                     </div>
                   ))}
                   {cashback.map((c, i) => (
-                    <div key={i} className="bg-purple-50 border border-purple-100 p-3 rounded-xl">
+                    <div key={i} className="bg-purple-500/10 border border-purple-500/20 p-3 rounded-sm">
                       <div className="flex justify-between items-center mb-1">
-                        <span className="text-xs font-bold text-purple-700">{c.provider}</span>
-                        <span className="text-xs font-bold text-gray-900">{c.offer}</span>
+                        <span className="text-[10px] font-bold text-purple-400 uppercase tracking-widest">{c.provider}</span>
+                        <span className="text-[10px] font-bold text-white">{c.offer}</span>
                       </div>
-                      <p className="text-[10px] text-gray-600">{c.details}</p>
+                      <p className="text-[9px] text-slate-400">{c.details}</p>
                     </div>
                   ))}
                   {coupons.length === 0 && cashback.length === 0 && (
-                     <div className="text-xs text-gray-500 text-center py-2 bg-gray-50 rounded-xl">No offers detected.</div>
+                     <div className="text-[10px] text-slate-500 text-center py-2 bg-slate-800/50 rounded-sm border border-slate-700 uppercase tracking-widest">No offers detected.</div>
                   )}
                 </div>
               </motion.div>
@@ -374,34 +421,34 @@ export default function ProductCard({
               rel="noopener noreferrer"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className={`w-full py-3.5 text-sm font-bold transition-all text-center flex items-center justify-center gap-2 rounded-xl ${
+              className={`w-full py-3.5 text-xs font-bold uppercase tracking-widest transition-all text-center flex items-center justify-center gap-2 rounded-sm border ${
                 isBest
-                  ? "bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md shadow-indigo-500/20"
-                  : "bg-gray-900 text-white hover:bg-gray-800"
+                  ? "bg-emerald-500 text-black border-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.4)]"
+                  : "bg-slate-800 text-white border-slate-700 hover:bg-emerald-500/20 hover:border-emerald-500 hover:text-emerald-400"
               }`}
             >
-              Get Deal <ExternalLink size={16} />
+              EXECUTE <ExternalLink size={14} />
             </motion.a>
             <motion.button
               onClick={handleWishlist}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className={`w-12 border rounded-xl flex items-center justify-center transition-colors ${
+              className={`w-12 border rounded-sm flex items-center justify-center transition-colors ${
                 isWishlisted 
-                  ? "bg-red-50 border-red-100 text-red-500" 
-                  : "border-gray-200 text-gray-400 hover:bg-gray-50 hover:text-red-500"
+                  ? "bg-[#FF3B30]/20 border-[#FF3B30] text-[#FF3B30]" 
+                  : "border-slate-700 text-slate-400 hover:bg-slate-800 hover:text-[#FF3B30]"
               }`}
               title={isWishlisted ? "Wishlisted!" : "Add to Wishlist"}
             >
-               <Heart size={20} fill={isWishlisted ? "currentColor" : "none"} className={isWishlisted ? "text-red-500" : ""} />
+               <Heart size={18} fill={isWishlisted ? "currentColor" : "none"} />
             </motion.button>
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className={`w-12 border rounded-xl flex items-center justify-center transition-colors ${
+              className={`w-12 border rounded-sm flex items-center justify-center transition-colors ${
                 isTracked 
-                  ? "bg-indigo-50 border-indigo-100 text-indigo-600" 
-                  : "border-gray-200 text-gray-400 hover:bg-gray-50 hover:text-indigo-600"
+                  ? "bg-cyan-500/20 border-cyan-500 text-cyan-400" 
+                  : "border-slate-700 text-slate-400 hover:bg-slate-800 hover:text-cyan-400"
               }`}
               title={isTracked ? "Alert Set!" : "Set Price Drop Alert"}
               onClick={handleTrackPrice}
@@ -409,9 +456,9 @@ export default function ProductCard({
               onMouseLeave={() => setIsHovered(false)}
             >
               {isTracked ? (
-                <Check size={20} />
+                <Check size={18} />
               ) : (
-                <TrendingDown size={20} />
+                <TrendingDown size={18} />
               )}
             </motion.button>
             <motion.a
@@ -420,10 +467,10 @@ export default function ProductCard({
               rel="noopener noreferrer"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="w-12 border rounded-xl flex items-center justify-center transition-colors border-green-100 text-green-500 hover:bg-green-50"
+              className="w-12 border rounded-sm flex items-center justify-center transition-colors border-emerald-500/30 text-emerald-500 hover:bg-emerald-500/10"
               title="Share on WhatsApp"
             >
-              <Share2 size={18} />
+              <Share2 size={16} />
             </motion.a>
           </div>
         </div>
