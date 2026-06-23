@@ -1,0 +1,37 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Analytics: Anyone can write searches, but only authenticated users can read (for admin panel)
+    match /searches/{document=**} {
+      allow write: if true;
+      allow read: if request.auth != null;
+    }
+
+    // Users and their subcollections
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      
+      match /wishlist/{document=**} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+      
+      match /alerts/{document=**} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+    
+    // Legacy tracking (if needed)
+    match /price_tracking/{document=**} {
+      allow read, write: if request.auth != null;
+    }
+    
+    match /wishlist/{document=**} {
+      allow read, write: if request.auth != null;
+    }
+
+    // Presence system
+    match /presence/{document=**} {
+      allow read, write: if true;
+    }
+  }
+}

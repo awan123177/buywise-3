@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "BuyWise Deal Detector",
+  "version": "1.0",
+  "description": "Automatically detect better prices on BuyWise while shopping on Amazon or Flipkart.",
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "*://*.amazon.in/*",
+    "*://*.flipkart.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.amazon.in/*", "*://*.flipkart.com/*"],
+      "js": ["content.js"]
+    }
+  ],
+  "action": {
+    "default_title": "BuyWise"
+  }
+}
