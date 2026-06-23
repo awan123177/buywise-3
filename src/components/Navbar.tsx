@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Diamond, Search, History, User, LayoutDashboard, LogOut } from 'lucide-react';
+import { Diamond, LogOut, User, Activity } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { collection, query, where, onSnapshot, doc, setDoc } from 'firebase/firestore';
@@ -15,7 +15,6 @@ export default function Navbar() {
     const sessionId = Math.random().toString(36).substring(2, 15);
     const presenceRef = doc(db, "presence", sessionId);
     
-    // Heartbeat every 30 secs
     const updatePresence = () => {
       setDoc(presenceRef, { lastActive: Date.now() }, { merge: true }).catch(() => {});
     };
@@ -24,10 +23,8 @@ export default function Navbar() {
 
     let cleanupQuery: () => void = () => {};
 
-    // Refresh the query every minute to slide the "last 2 mins" window forward
     const setupPresence = () => {
       cleanupQuery();
-      // Listen to active sessions in last 2 mins from current time
       const q = query(collection(db, "presence"), where("lastActive", ">", Date.now() - 120000));
       cleanupQuery = onSnapshot(q, (snapshot) => {
         setOnlineCount(snapshot.size > 0 ? snapshot.size : 1);
@@ -45,33 +42,28 @@ export default function Navbar() {
   }, []);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-[100] h-20 md:h-24 px-4 md:px-16 flex items-center justify-between border-b border-white/5 bg-[#050505]/50 backdrop-blur-xl transition-all">
-      <Link to="/" className="flex items-center gap-4 md:gap-6 group">
-        <div className="relative hidden sm:block">
-          <div className="w-10 h-10 md:w-12 md:h-12 relative transition-all duration-500 group-hover:rotate-180">
-            <div className="absolute top-0 left-0 w-6 h-6 md:w-8 md:h-8 bg-[#FF3B30] border border-white/5 mix-blend-screen shadow-[0_0_20px_rgba(255,59,48,0.3)]"></div>
-            <div className="absolute bottom-0 right-0 w-6 h-6 md:w-8 md:h-8 bg-transparent border border-white/10 backdrop-blur-sm"></div>
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 md:w-3 md:h-3 bg-white z-10 rounded-full shadow-[0_0_10px_rgba(255,255,255,0.8)]"></div>
-          </div>
+    <nav className="fixed top-0 left-0 right-0 z-[100] h-20 px-4 md:px-12 flex items-center justify-between bg-white/80 backdrop-blur-xl border-b border-gray-200/50 shadow-sm transition-all">
+      <Link to="/" className="flex items-center gap-3 group">
+        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-indigo-500/30 transition-transform group-hover:scale-105">
+          B
         </div>
         <div className="flex flex-col">
-          <h1 className="text-2xl md:text-3xl font-black tracking-tighter text-[#f5f5f5] uppercase leading-none">BUY<span className="text-[#FF3B30]">WISE</span></h1>
-          <span className="hidden sm:inline-block text-[8px] md:text-[10px] uppercase tracking-[0.4em] font-black text-[#f5f5f5]/40 mt-1">Market Node: 001</span>
+          <h1 className="text-2xl font-extrabold tracking-tight text-gray-900 leading-none">Buy<span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-600">Wise</span></h1>
         </div>
       </Link>
 
-      <div className="hidden lg:flex items-center space-x-0 border-l border-r border-white/5 h-full">
+      <div className="hidden lg:flex items-center space-x-8 h-full">
         {[
-          { name: 'INDEX', path: '/' },
-          { name: 'WISHLIST', path: '/wishlist' },
-          { name: 'RADAR', path: '/radar' },
-          { name: 'ADMIN', path: '/admin' },
+          { name: 'Discover', path: '/' },
+          { name: 'Wishlist', path: '/wishlist' },
+          { name: 'Radar', path: '/radar' },
+          { name: 'Admin', path: '/admin' },
         ].map((item) => (
           <Link
             key={item.name}
             to={item.path}
-            className={`px-10 h-full flex items-center text-[11px] font-black tracking-[0.2em] transition-all hover:bg-white/5 border-r border-white/5 last:border-r-0 ${
-              location.pathname === item.path ? 'bg-gradient-to-b from-[#FF3B30]/10 to-transparent text-[#FF3B30] border-b-2 border-b-[#FF3B30]' : 'text-[#f5f5f5]'
+            className={`text-sm font-semibold transition-all hover:text-indigo-600 ${
+              location.pathname === item.path ? 'text-indigo-600' : 'text-gray-500'
             }`}
           >
             {item.name}
@@ -79,27 +71,17 @@ export default function Navbar() {
         ))}
       </div>
 
-      <div className="flex items-center gap-4 md:gap-8">
-        <div className="hidden lg:flex flex-col items-end border-r border-white/5 pr-8">
-          <div className="text-[9px] text-[#f5f5f5] font-black uppercase tracking-[0.2em] opacity-40 mb-1">CURRENCY / REGION</div>
-          <div className="text-xs text-[#f5f5f5] font-black tracking-widest bg-white/5 px-2 py-0.5 rounded border border-white/5">INR // IND</div>
+      <div className="flex items-center gap-4 md:gap-6">
+        <div className="hidden md:flex items-center gap-2 text-xs font-semibold text-gray-500 bg-gray-50 px-3 py-1.5 rounded-full border border-gray-200">
+          <Activity size={14} className="text-green-500" />
+          <span>{onlineCount} Online</span>
         </div>
-        <div className="text-right hidden md:block border-r border-white/5 pr-8">
-          <div className="text-[10px] text-[#f5f5f5] uppercase tracking-widest leading-none mb-1 font-black opacity-30">Live Users</div>
-          <div className="text-xs text-[#FF3B30] font-mono font-black border-l-2 border-[#FF3B30] pl-4 leading-none flex items-center gap-2">
-            <span className="w-2 h-2 bg-[#FF3B30] rounded-full animate-pulse shadow-[0_0_8px_#FF3B30]"></span>
-            {onlineCount} ONLINE
-          </div>
-        </div>
-        <div className="text-right hidden sm:block">
-          <div className="text-[10px] text-[#f5f5f5] uppercase tracking-widest leading-none mb-1 font-black opacity-30">Status</div>
-          <div className="text-xs text-green-500 font-mono font-black border-l-2 border-green-500 pl-4 leading-none text-shadow-sm">CONNECTED</div>
-        </div>
+
         {user ? (
           <div className="flex items-center gap-4">
-            <div className="hidden lg:flex flex-col items-end border-r border-white/5 pr-4">
-              <div className="text-[9px] text-[#f5f5f5] font-black uppercase tracking-[0.2em] opacity-40 mb-1">BuyWise Coins</div>
-              <div className="text-xs text-yellow-500 font-black tracking-widest bg-yellow-500/10 px-2 py-0.5 rounded border border-yellow-500/20 shadow-[0_0_10px_rgba(234,179,8,0.2)]">
+            <div className="hidden md:flex flex-col items-end">
+              <div className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Coins</div>
+              <div className="text-xs text-yellow-600 font-bold bg-yellow-50 px-2 py-0.5 rounded-md border border-yellow-200">
                 {userData?.coins || 0} 🪙
               </div>
             </div>
@@ -107,15 +89,15 @@ export default function Navbar() {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="hidden md:flex h-8 px-4 bg-gradient-to-r from-[#FF3B30] to-[#ff6b6b] text-white text-[10px] font-black uppercase tracking-[0.2em] rounded items-center gap-2 shadow-[0_0_15px_rgba(255,59,48,0.4)]"
+                className="hidden md:flex h-9 px-4 bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-xs font-bold rounded-xl items-center gap-2 shadow-md shadow-indigo-500/20"
                 onClick={() => window.dispatchEvent(new CustomEvent('open-premium-modal'))}
               >
-                <Diamond size={12} /> GET PREMIUM
+                <Diamond size={14} /> Upgrade
               </motion.button>
             )}
             {userData?.isPremium && (
-              <div className="hidden md:flex items-center gap-1 text-[10px] font-black tracking-widest text-[#a855f7] border border-[#a855f7]/30 bg-[#a855f7]/10 px-2 py-1 rounded">
-                <Diamond size={10} /> PRO
+              <div className="hidden md:flex items-center gap-1 text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-xl border border-indigo-100">
+                <Diamond size={14} /> PRO
               </div>
             )}
             <motion.button
@@ -123,11 +105,11 @@ export default function Navbar() {
               whileTap={{ scale: 0.95 }}
               onClick={logout}
               title={`Logout ${user.displayName}`}
-              className="w-12 h-12 border border-white/10 rounded-full p-0 group overflow-hidden bg-transparent relative shadow-[0_0_15px_rgba(0,0,0,0.5)] cursor-pointer"
+              className="w-10 h-10 rounded-full p-0 group overflow-hidden bg-gray-100 relative shadow-sm cursor-pointer border border-gray-200"
             >
               <img src={user.photoURL || undefined} alt="avatar" className={`w-full h-full object-cover transition-all ${userData?.isPremium ? '' : 'grayscale'} group-hover:grayscale-0 absolute inset-0`} />
-              <div className="absolute inset-0 bg-[#FF3B30]/80 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                <LogOut size={20} className="text-white" />
+              <div className="absolute inset-0 bg-red-500/80 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <LogOut size={16} className="text-white" />
               </div>
             </motion.button>
           </div>
@@ -136,10 +118,10 @@ export default function Navbar() {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={signInWithGoogle}
-            className="h-12 px-6 border border-white/10 rounded-lg group overflow-hidden bg-white/5 cursor-pointer flex items-center gap-3 transition-colors hover:bg-white hover:text-black hover:border-white"
+            className="h-10 px-5 bg-white border border-gray-200 rounded-xl flex items-center gap-2 transition-all hover:bg-gray-50 hover:border-gray-300 shadow-sm text-gray-700 font-semibold text-sm"
           >
-            <User size={16} className="text-[#f5f5f5] group-hover:text-black transition-colors" />
-            <span className="text-[10px] font-black uppercase tracking-widest group-hover:text-black">SIGN_IN WITH GOOGLE</span>
+            <User size={16} />
+            <span>Sign In</span>
           </motion.button>
         )}
       </div>

@@ -162,32 +162,30 @@ export default function ProductCard({
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`terminal-card p-0 flex flex-col gap-0 overflow-hidden bg-transparent ${
-          isBest
-            ? "border-[#cc0000] border-2 shadow-[0_0_30px_0_rgba(204,0,0,0.4)]"
-            : "border-white/10"
+        className={`glass-panel p-0 flex flex-col gap-0 overflow-hidden ${
+          isBest ? "border-indigo-500 border-2 shadow-lg shadow-indigo-500/20" : ""
         }`}
       >
-        <div className="relative aspect-[4/5] bg-white/5 animate-pulse flex items-center justify-center overflow-hidden border-b border-white/10" />
+        <div className="relative aspect-[4/5] bg-gray-100 animate-pulse flex items-center justify-center overflow-hidden border-b border-gray-200" />
 
-        <div className="p-6 flex flex-col gap-4 flex-grow bg-black/20">
-          <div className="flex items-center justify-between border-b border-white/10 pb-3">
-            <div className="h-3 w-16 bg-white/10 animate-pulse rounded-full" />
-            <div className="h-3 w-8 bg-white/10 animate-pulse rounded-full" />
+        <div className="p-5 flex flex-col gap-4 flex-grow bg-white">
+          <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+            <div className="h-3 w-16 bg-gray-200 animate-pulse rounded-full" />
+            <div className="h-3 w-8 bg-gray-200 animate-pulse rounded-full" />
           </div>
 
           <div className="space-y-2">
-            <div className="h-4 w-full bg-white/10 animate-pulse rounded-full" />
-            <div className="h-4 w-2/3 bg-white/10 animate-pulse rounded-full" />
+            <div className="h-4 w-full bg-gray-200 animate-pulse rounded-full" />
+            <div className="h-4 w-2/3 bg-gray-200 animate-pulse rounded-full" />
           </div>
 
           <div className="mt-auto pt-4 flex flex-col gap-6">
             <div className="flex flex-col gap-2">
-              <div className="h-8 w-24 bg-white/10 animate-pulse rounded-full" />
-              <div className="h-3 w-32 bg-white/10 animate-pulse rounded-full" />
+              <div className="h-8 w-24 bg-gray-200 animate-pulse rounded-full" />
+              <div className="h-3 w-32 bg-gray-200 animate-pulse rounded-full" />
             </div>
 
-            <div className="w-full py-6 bg-white/10 animate-pulse rounded-lg" />
+            <div className="w-full h-12 bg-gray-200 animate-pulse rounded-xl" />
           </div>
         </div>
       </motion.div>
@@ -198,22 +196,13 @@ export default function ProductCard({
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
-      className={`terminal-card p-0 flex flex-col gap-0 overflow-hidden group transition-all duration-500 bg-transparent ${
+      className={`glass-panel p-0 flex flex-col gap-0 overflow-hidden group transition-all duration-500 ${
         isBest
-          ? "border-[#cc0000] border-2 shadow-[0_0_30px_0_rgba(204,0,0,0.4)] hover:shadow-[0_0_50px_0_rgba(204,0,0,0.6)]"
-          : "border-white/10 hover:border-white/30"
+          ? "border-indigo-500 border-2 shadow-lg shadow-indigo-500/20"
+          : "hover:border-indigo-300"
       }`}
     >
-      <div className="relative aspect-[4/5] bg-white/5 flex items-center justify-center overflow-hidden border-b border-white/10">
-        <div className="absolute top-4 left-4 flex flex-col gap-1 z-20 pointer-events-none">
-          <span className="text-[9px] font-black text-white/40 uppercase tracking-widest leading-none">
-            NODE_ID
-          </span>
-          <span className="text-[10px] font-black text-white uppercase tracking-tighter leading-none">
-            BS-0{Math.floor(Math.random() * 900)}
-          </span>
-        </div>
-
+      <div className="relative aspect-[4/5] bg-gray-50 flex items-center justify-center overflow-hidden border-b border-gray-200">
         <div className="absolute inset-0 w-full h-full z-10 pointer-events-none">
           <Product3DViewer imageUrl={product.thumbnail} />
         </div>
@@ -223,63 +212,63 @@ export default function ProductCard({
           <img
             src={product.thumbnail}
             alt={product.title}
-            className="w-full h-full object-contain filter drop-shadow-2xl transition-transform duration-700 ease-out group-hover:scale-110 group-hover:-translate-y-2 opacity-90 group-hover:opacity-100"
+            className="w-full h-full object-contain filter drop-shadow-xl transition-transform duration-700 ease-out group-hover:scale-105 group-hover:-translate-y-2"
             referrerPolicy="no-referrer"
           />
         </div>
 
         {isBest && (
-          <div className="absolute top-0 right-0 bg-[#cc0000] text-white text-[10px] font-black uppercase px-4 py-2 border-l border-b border-white/10 shadow-lg flex items-center gap-2 z-20 pointer-events-none backdrop-blur-md rounded-bl-lg">
-            MIN_PRICE_DETECTION
+          <div className="absolute top-0 right-0 bg-indigo-600 text-white text-[10px] font-bold uppercase px-3 py-1.5 shadow-md flex items-center gap-1 z-20 pointer-events-none rounded-bl-xl">
+            <Sparkles size={12}/> Top Pick
           </div>
         )}
       </div>
 
-      <div className="p-6 flex flex-col gap-4 flex-grow bg-black/20">
-        <div className="flex items-center justify-between border-b border-white/10 pb-3">
-          <span className="text-[11px] font-black text-[#cc0000] uppercase tracking-[0.1em]">
+      <div className="p-5 flex flex-col gap-3 flex-grow bg-white">
+        <div className="flex items-center justify-between border-b border-gray-100 pb-2">
+          <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">
             {product.source}
           </span>
-          <div className="flex items-center gap-1.5 text-[10px] text-white font-black">
-            <Star size={10} fill="white" />
+          <div className="flex items-center gap-1 text-xs text-amber-500 font-bold bg-amber-50 px-2 py-0.5 rounded-full">
+            <Star size={12} fill="currentColor" />
             {product.rating || "4.5"}
           </div>
         </div>
 
-        <h3 className="text-sm font-black text-white line-clamp-2 leading-relaxed tracking-tight uppercase">
+        <h3 className="text-sm font-bold text-gray-900 line-clamp-2 leading-snug">
           {product.title}
         </h3>
 
         {/* Dynamic Generative Features */}
         {product.features && product.features.length > 0 && (
-          <div className="flex flex-col gap-1.5 mt-2">
+          <div className="flex flex-col gap-1 mt-1">
             {product.features.map((feat, idx) => (
               <div
                 key={idx}
-                className="flex items-center gap-2 text-[9px] font-black tracking-widest text-[#888] uppercase"
+                className="flex items-center gap-2 text-[10px] font-medium text-gray-500 uppercase"
               >
-                <div className="w-1 h-1 bg-[#cc0000]" />
+                <Check size={10} className="text-indigo-500" />
                 {feat}
               </div>
             ))}
           </div>
         )}
 
-        <div className="mt-auto pt-4 flex flex-col gap-6">
+        <div className="mt-auto pt-4 flex flex-col gap-4">
           <div className="flex flex-col gap-1">
-            <div className="flex items-baseline gap-3">
-              <span className="text-3xl font-black text-white tracking-tighter">
+            <div className="flex items-baseline gap-2">
+              <span className="text-2xl font-extrabold text-gray-900 tracking-tight">
                 {formatPrice(product.price)}
               </span>
               {product.old_price && (
-                <span className="text-[10px] text-white/40 line-through font-black">
+                <span className="text-xs text-gray-400 line-through font-medium">
                   {formatPrice(product.old_price)}
                 </span>
               )}
             </div>
-            <div className="text-[9px] text-white/40 uppercase tracking-[0.2em] font-black flex items-center gap-2">
-              <Truck size={12} className="text-[#cc0000]" />
-              {product.delivery || "PRIORITY_LOGISTICS"}
+            <div className="text-[10px] text-green-600 font-bold flex items-center gap-1 uppercase bg-green-50 w-fit px-2 py-0.5 rounded">
+              <Truck size={12} />
+              {product.delivery || "Fast Delivery"}
             </div>
           </div>
 
@@ -289,21 +278,21 @@ export default function ProductCard({
               onClick={() => setShowHistory(!showHistory)}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className={`py-2 px-3 text-[10px] font-black tracking-widest uppercase transition-colors rounded-lg border flex items-center justify-center gap-2 ${
-                showHistory ? "bg-[#FF3B30] text-white border-[#FF3B30]" : "border-white/10 text-white hover:bg-white/5"
+              className={`py-2 px-3 text-xs font-bold transition-colors rounded-xl flex items-center justify-center gap-2 ${
+                showHistory ? "bg-gray-900 text-white shadow-md" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
             >
-              <LineChart size={12} /> HISTORY
+              <LineChart size={14} /> History
             </motion.button>
             <motion.button
               onClick={() => setShowOffers(!showOffers)}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className={`py-2 px-3 text-[10px] font-black tracking-widest uppercase transition-colors rounded-lg border flex items-center justify-center gap-2 ${
-                showOffers ? "bg-green-500 text-white border-green-500" : "border-green-500/30 text-green-500 bg-green-500/10 hover:bg-green-500 hover:text-white"
+              className={`py-2 px-3 text-xs font-bold transition-colors rounded-xl flex items-center justify-center gap-2 ${
+                showOffers ? "bg-green-500 text-white shadow-md" : "bg-green-50 text-green-700 hover:bg-green-100"
               }`}
             >
-              <Ticket size={12} /> OFFERS {(coupons.length > 0 || cashback.length > 0) && `(${(coupons.length + cashback.length)})`}
+              <Ticket size={14} /> Offers {(coupons.length > 0 || cashback.length > 0) && `(${(coupons.length + cashback.length)})`}
             </motion.button>
           </div>
 
@@ -312,19 +301,19 @@ export default function ProductCard({
               onClick={() => handlePremiumFeature(() => onSummarize?.(product))}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="py-2 px-3 text-[10px] font-black tracking-widest uppercase transition-colors rounded-lg border border-[#3b82f6]/30 bg-[#3b82f6]/10 text-[#3b82f6] hover:bg-[#3b82f6] hover:text-white flex items-center justify-center gap-2"
+              className="py-2 px-3 text-xs font-bold transition-colors rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 flex items-center justify-center gap-1.5"
             >
-              <Sparkles size={12} /> AI SUMMARY
-              {!userData?.isPremium && <Diamond size={10} className="text-[#a855f7]" />}
+              <Sparkles size={14} /> Summary
+              {!userData?.isPremium && <Diamond size={10} className="text-purple-500 ml-1" />}
             </motion.button>
             <motion.button
               onClick={() => handlePremiumFeature(() => onCompare?.(product))}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="py-2 px-3 text-[10px] font-black tracking-widest uppercase transition-colors rounded-lg border border-[#a855f7]/30 bg-[#a855f7]/10 text-[#a855f7] hover:bg-[#a855f7] hover:text-white flex items-center justify-center gap-2"
+              className="py-2 px-3 text-xs font-bold transition-colors rounded-xl bg-purple-50 text-purple-600 hover:bg-purple-100 flex items-center justify-center gap-1.5"
             >
-              <Scale size={12} /> COMPARE
-              {!userData?.isPremium && <Diamond size={10} className="text-[#a855f7]" />}
+              <Scale size={14} /> Compare
+              {!userData?.isPremium && <Diamond size={10} className="text-purple-500 ml-1" />}
             </motion.button>
           </div>
 
@@ -349,27 +338,27 @@ export default function ProductCard({
                 exit={{ height: 0, opacity: 0 }}
                 className="overflow-hidden"
               >
-                <div className="pt-2 pb-4 space-y-3">
+                <div className="pt-2 pb-2 space-y-2">
                   {coupons.map((c, i) => (
-                    <div key={i} className="bg-green-500/10 border border-green-500/20 p-3 rounded-lg">
+                    <div key={i} className="bg-green-50 border border-green-100 p-3 rounded-xl">
                       <div className="flex justify-between items-center mb-1">
-                        <span className="text-xs font-black text-green-400 tracking-widest uppercase flex items-center gap-1"><Tag size={12}/> {c.code}</span>
-                        <span className="text-xs font-black text-white">{c.discount}</span>
+                        <span className="text-xs font-bold text-green-700 flex items-center gap-1"><Tag size={12}/> {c.code}</span>
+                        <span className="text-xs font-bold text-gray-900">{c.discount}</span>
                       </div>
-                      <p className="text-[10px] text-white/50">{c.description}</p>
+                      <p className="text-[10px] text-gray-600">{c.description}</p>
                     </div>
                   ))}
                   {cashback.map((c, i) => (
-                    <div key={i} className="bg-[#a855f7]/10 border border-[#a855f7]/20 p-3 rounded-lg">
+                    <div key={i} className="bg-purple-50 border border-purple-100 p-3 rounded-xl">
                       <div className="flex justify-between items-center mb-1">
-                        <span className="text-xs font-black text-[#a855f7] tracking-widest uppercase">{c.provider}</span>
-                        <span className="text-xs font-black text-white">{c.offer}</span>
+                        <span className="text-xs font-bold text-purple-700">{c.provider}</span>
+                        <span className="text-xs font-bold text-gray-900">{c.offer}</span>
                       </div>
-                      <p className="text-[10px] text-white/50">{c.details}</p>
+                      <p className="text-[10px] text-gray-600">{c.details}</p>
                     </div>
                   ))}
                   {coupons.length === 0 && cashback.length === 0 && (
-                     <div className="text-[10px] text-white/40 text-center uppercase tracking-widest">No offers detected.</div>
+                     <div className="text-xs text-gray-500 text-center py-2 bg-gray-50 rounded-xl">No offers detected.</div>
                   )}
                 </div>
               </motion.div>
@@ -385,34 +374,34 @@ export default function ProductCard({
               rel="noopener noreferrer"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className={`w-full py-4 text-[11px] font-black tracking-[0.2em] uppercase transition-all text-center flex items-center justify-center gap-2 rounded-lg border ${
+              className={`w-full py-3.5 text-sm font-bold transition-all text-center flex items-center justify-center gap-2 rounded-xl ${
                 isBest
-                  ? "bg-[#FF3B30] text-white hover:bg-white hover:text-black border-[#FF3B30] shadow-[0_0_15px_rgba(255,59,48,0.5)]"
-                  : "bg-white/5 text-white hover:bg-white hover:text-black border-white/10"
+                  ? "bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md shadow-indigo-500/20"
+                  : "bg-gray-900 text-white hover:bg-gray-800"
               }`}
             >
-              ORDER_NOW <ExternalLink size={14} />
+              Get Deal <ExternalLink size={16} />
             </motion.a>
             <motion.button
               onClick={handleWishlist}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className={`px-4 border rounded-lg flex items-center justify-center transition-colors ${
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className={`w-12 border rounded-xl flex items-center justify-center transition-colors ${
                 isWishlisted 
-                  ? "bg-[#FF3B30] border-[#FF3B30] text-white" 
-                  : "border-white/10 text-white hover:bg-[#FF3B30] hover:text-white hover:border-[#FF3B30]"
+                  ? "bg-red-50 border-red-100 text-red-500" 
+                  : "border-gray-200 text-gray-400 hover:bg-gray-50 hover:text-red-500"
               }`}
               title={isWishlisted ? "Wishlisted!" : "Add to Wishlist"}
             >
-               <Heart size={18} fill={isWishlisted ? "currentColor" : "none"} />
+               <Heart size={20} fill={isWishlisted ? "currentColor" : "none"} className={isWishlisted ? "text-red-500" : ""} />
             </motion.button>
             <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className={`px-4 border rounded-lg flex items-center justify-center transition-colors ${
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className={`w-12 border rounded-xl flex items-center justify-center transition-colors ${
                 isTracked 
-                  ? "bg-white border-white text-black hover:bg-[#f5f5f5]" 
-                  : "border-white/10 text-white hover:bg-[#FF3B30] hover:text-white hover:border-[#FF3B30]"
+                  ? "bg-indigo-50 border-indigo-100 text-indigo-600" 
+                  : "border-gray-200 text-gray-400 hover:bg-gray-50 hover:text-indigo-600"
               }`}
               title={isTracked ? "Alert Set!" : "Set Price Drop Alert"}
               onClick={handleTrackPrice}
@@ -420,18 +409,18 @@ export default function ProductCard({
               onMouseLeave={() => setIsHovered(false)}
             >
               {isTracked ? (
-                <Check size={18} />
+                <Check size={20} />
               ) : (
-                <TrendingDown size={18} />
+                <TrendingDown size={20} />
               )}
             </motion.button>
             <motion.a
               href={`https://wa.me/?text=${encodeURIComponent(`Check out ${product.title} at ${product.price} on ${product.source}!\n${getOrderLink()}`)}`}
               target="_blank"
               rel="noopener noreferrer"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="px-4 border rounded-lg flex items-center justify-center transition-colors border-[#25D366]/30 text-[#25D366] hover:bg-[#25D366] hover:text-white hover:border-[#25D366]"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="w-12 border rounded-xl flex items-center justify-center transition-colors border-green-100 text-green-500 hover:bg-green-50"
               title="Share on WhatsApp"
             >
               <Share2 size={18} />

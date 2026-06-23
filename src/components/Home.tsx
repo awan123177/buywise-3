@@ -233,54 +233,49 @@ export default function Home() {
   return (
     <div className="min-h-screen pt-32 md:pt-44 pb-32 px-4 md:px-12 bg-transparent">
       <div className="max-w-[1400px] mx-auto">
-        <header className="mb-20 md:mb-32 relative">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-end">
+        <header className="mb-16 md:mb-24 relative pt-10">
+          <div className="flex flex-col items-center text-center max-w-3xl mx-auto">
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, ease: "circOut" }}
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: "circOut" }}
+              className="mb-6"
             >
-              <h1 className="text-[12vw] sm:text-[9vw] leading-[0.8] tracking-[-0.06em] font-black uppercase font-display text-white relative z-10 w-[max-content] max-w-full">
-                <span className="relative z-10">PRICE</span><br/>
-                <span className="text-[#FF3B30] relative z-10 inline-block">
-                  CONTROL.
-                  <div className="absolute inset-x-0 bottom-0 h-1 bg-[#FF3B30]/50 rounded-full"></div>
-                  <div className="absolute inset-x-0 bottom-1 h-0.5 bg-gradient-to-r from-transparent via-white to-transparent opacity-30"></div>
-                </span>
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-600 text-xs font-bold uppercase tracking-wider mb-8">
+                <Sparkles size={14} /> Smart AI Shopping Assistant
+              </div>
+              <h1 className="massive-title mb-6">
+                Shop smarter with <br/>
+                <span className="brand-text">AI Intelligence.</span>
               </h1>
             </motion.div>
             
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.8 }}
-              className="flex flex-col gap-6 lg:pb-4"
+              transition={{ delay: 0.2, duration: 0.6 }}
             >
-              <p className="text-xl font-medium text-white max-w-md leading-snug">
-                The global standard for real-time market sourcing and competitive intelligence.
+              <p className="text-lg md:text-xl text-gray-500 font-medium leading-relaxed">
+                Compare prices, summarize reviews, and find the absolute best deals across the internet in seconds.
               </p>
-              <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.4em] text-white/40">
-                <div className="w-12 h-[2px] bg-[#FF3B30]" />
-                AUTONOMOUS RETRIEVAL ACTIVE
-              </div>
             </motion.div>
           </div>
         </header>
 
-        <section className="mb-20 md:mb-40 relative">
+        <section className="mb-16 md:mb-32 relative z-10">
           <motion.div 
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className={`terminal-card flex flex-col md:flex-row items-stretch md:items-center p-0 overflow-hidden ${loading ? 'opacity-50' : ''} border-white/10 bg-transparent`}
+            transition={{ delay: 0.4 }}
+            className={`glass-panel p-2 flex flex-col md:flex-row items-stretch md:items-center overflow-visible ${loading ? 'opacity-50' : ''}`}
           >
-            <div className="flex border-b border-white/10 mt-4 px-6 md:px-12">
+            <div className="flex space-x-1 p-2 md:p-0 md:pr-4 md:border-r border-gray-200">
               {(['shopping', 'flights', 'trains'] as const).map(mode => (
                 <button
                   key={mode}
                   onClick={() => setSearchMode(mode)}
-                  className={`px-6 py-4 text-[10px] font-black uppercase tracking-widest border-b-2 transition-colors ${
-                    searchMode === mode ? 'border-[#FF3B30] text-[#FF3B30]' : 'border-transparent text-white/50 hover:text-white'
+                  className={`px-4 py-2.5 text-xs font-bold capitalize rounded-xl transition-all ${
+                    searchMode === mode ? 'bg-indigo-50 text-indigo-600 shadow-sm' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
                   }`}
                 >
                   {mode}
@@ -288,26 +283,26 @@ export default function Home() {
               ))}
             </div>
 
-            <div className="relative flex-grow flex items-center h-16 md:h-24 px-6 md:px-12 border-b md:border-b-0 md:border-r border-white/10 bg-white/5 backdrop-blur-md">
-              <span className="mr-4 md:mr-6 text-white/20 font-black tracking-tighter text-xl">#</span>
+            <div className="relative flex-grow flex items-center h-14 md:h-16 px-4">
+              <Search className="mr-3 text-gray-400" size={20} />
               <input
                 type="text"
                 value={query}
                 onChange={(e) => handleQueryChange(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                placeholder={searchMode === 'shopping' ? "INPUT MARKET QUERY" : "e.g. DEL to BOM"}
-                className="bg-transparent border-none outline-none text-white w-full text-lg md:text-2xl font-black placeholder:text-white/30 uppercase tracking-tighter"
+                placeholder={searchMode === 'shopping' ? "What are you looking for?" : "e.g. DEL to BOM"}
+                className="bg-transparent border-none outline-none text-gray-900 w-full text-lg font-semibold placeholder:text-gray-400 placeholder:font-medium"
               />
 
               {autocompleteSuggestions.length > 0 && (
-                <div className="absolute top-full left-0 w-full bg-black/90 border border-white/10 border-t-0 backdrop-blur-md z-50">
+                <div className="absolute top-[calc(100%+10px)] left-0 w-full bg-white border border-gray-200 rounded-2xl shadow-xl z-50 overflow-hidden">
                   {autocompleteSuggestions.map((sug, i) => (
                     <button
                       key={i}
                       onClick={() => handleSuggestionClick(sug)}
-                      className="w-full text-left px-6 py-3 text-white/70 hover:bg-white/10 hover:text-white text-sm uppercase tracking-widest flex items-center gap-3 border-b border-white/5 last:border-b-0"
+                      className="w-full text-left px-5 py-3 text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 text-sm font-medium flex items-center gap-3 border-b border-gray-100 last:border-b-0 transition-colors"
                     >
-                      <MapPin size={14} className="text-[#a855f7]" /> {sug.term || sug.id || sug.name}
+                      <MapPin size={16} className="text-indigo-500" /> {sug.term || sug.id || sug.name}
                     </button>
                   ))}
                 </div>
@@ -315,25 +310,26 @@ export default function Home() {
 
               <button
                 onClick={() => setIsScanning(true)}
-                className="ml-4 text-white/50 hover:text-white transition-colors"
+                className="ml-2 p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
                 title="Scan Barcode"
               >
-                <Camera size={24} />
+                <Camera size={20} />
               </button>
             </div>
-            <div className="flex h-16 md:h-24">
+            
+            <div className="flex h-14 md:h-16 p-2 md:p-0 gap-2">
               <button 
                 onClick={startVoiceSearch}
-                className={`w-16 md:w-24 flex items-center justify-center border-r border-white/10 transition-all hover:bg-white/10 hover:text-white ${isListening ? 'bg-[#FF3B30] text-white animate-pulse' : 'text-white/70'}`}
+                className={`w-12 md:w-14 flex items-center justify-center rounded-xl transition-all ${isListening ? 'bg-indigo-100 text-indigo-600 animate-pulse' : 'bg-gray-50 text-gray-500 hover:bg-gray-100'}`}
               >
-                <Mic size={24} className="w-5 h-5 md:w-6 md:h-6" />
+                <Mic size={20} />
               </button>
               <button
                 onClick={() => handleSearch()}
                 disabled={loading}
-                className="btn-brutalist !border-none !rounded-none min-w-[140px] md:min-w-[200px] flex-grow md:flex-grow-0 h-full flex items-center justify-center text-[10px] md:text-xs"
+                className="btn-modern min-w-[120px] md:min-w-[160px] flex-grow md:flex-grow-0 h-full"
               >
-                {loading ? <Loader2 className="animate-spin w-5 h-5 md:w-6 md:h-6" /> : 'RETRIEVE DATA'}
+                {loading ? <Loader2 className="animate-spin" size={20} /> : 'Search'}
               </button>
             </div>
           </motion.div>
@@ -342,9 +338,9 @@ export default function Home() {
             <motion.div 
               initial={{ opacity: 0 }} 
               animate={{ opacity: 1 }} 
-              className="absolute -bottom-10 right-4 text-[11px] font-black uppercase tracking-[0.2em] text-[#FF3B30] flex items-center gap-3"
+              className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-xs font-semibold text-indigo-600 flex items-center gap-2"
             >
-              <div className="w-2 h-2 bg-[#FF3B30] animate-ping" />
+              <Loader2 size={14} className="animate-spin" />
               {searchingStatus}
             </motion.div>
           )}
@@ -566,32 +562,37 @@ export default function Home() {
               key="empty"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="flex flex-col items-center justify-center py-20"
+              className="flex flex-col items-center justify-center py-12"
             >
-              <div className="p-12 border border-white/10 rounded-xl bg-white/5 backdrop-blur-md mb-20 w-full text-center">
-                <p className="text-[11px] uppercase font-black tracking-[1em] text-white/30">AWAITING_MARKET_SIGNAL</p>
-              </div>
-
-              {searchMode === 'shopping' && (
+              {searchMode === 'shopping' ? (
                 <div className="w-full">
                   <div className="flex items-center gap-2 mb-6">
-                    <Tag className="text-[#a855f7]" size={16} />
-                    <h2 className="text-sm font-black text-white uppercase tracking-widest">LIVE PREMIUM DEALS</h2>
+                    <Tag className="text-indigo-600" size={20} />
+                    <h2 className="text-xl font-bold text-gray-900 tracking-tight">Trending Deals Today</h2>
                   </div>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     {[
-                      { name: "iPhone 15 Pro", discount: "20% OFF", source: "Amazon" },
-                      { name: "Sony WH-1000XM5", discount: "₹5,000 Cashback", source: "Croma" },
-                      { name: "Samsung Galaxy S24", discount: "Lowest Price in 30 Days", source: "Flipkart" },
-                      { name: "MacBook Air M3", discount: "Student Discount Active", source: "Reliance Digital" }
+                      { name: "iPhone 15 Pro", discount: "20% OFF", source: "Amazon", img: "📱" },
+                      { name: "Sony WH-1000XM5", discount: "₹5,000 Cashback", source: "Croma", img: "🎧" },
+                      { name: "Samsung Galaxy S24", discount: "Lowest Price", source: "Flipkart", img: "📲" },
+                      { name: "MacBook Air M3", discount: "Student Offer", source: "Reliance", img: "💻" }
                     ].map((deal, i) => (
-                      <div key={i} onClick={() => { setQuery(deal.name); handleSearch(undefined, deal.name); }} className="bg-white/5 border border-white/10 p-4 rounded-xl hover:border-[#a855f7]/50 transition-all cursor-pointer group">
-                        <p className="text-[10px] text-white/50 tracking-widest uppercase mb-1">{deal.source}</p>
-                        <p className="text-sm font-black text-white uppercase tracking-tight mb-2 truncate">{deal.name}</p>
-                        <p className="text-[10px] font-bold text-[#a855f7] bg-[#a855f7]/10 inline-block px-2 py-1 rounded">{deal.discount}</p>
+                      <div key={i} onClick={() => { setQuery(deal.name); handleSearch(undefined, deal.name); }} className="glass-panel p-5 cursor-pointer group hover:-translate-y-1">
+                        <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+                          {deal.img}
+                        </div>
+                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">{deal.source}</p>
+                        <p className="text-base font-bold text-gray-900 mb-3 truncate">{deal.name}</p>
+                        <span className="inline-block px-2.5 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-lg">{deal.discount}</span>
                       </div>
                     ))}
                   </div>
+                </div>
+              ) : (
+                <div className="p-12 glass-panel mb-20 w-full max-w-md text-center">
+                  <Search size={48} className="mx-auto text-gray-300 mb-4" />
+                  <p className="text-lg font-bold text-gray-500">Ready to search?</p>
+                  <p className="text-sm text-gray-400 mt-2">Enter your destination or query above to begin.</p>
                 </div>
               )}
             </motion.div>
@@ -601,12 +602,12 @@ export default function Home() {
 
       <ChatAssistant results={filteredResults} />
 
-      <footer className="w-full h-auto py-4 md:h-16 md:py-0 border-t border-white/10 px-4 md:px-16 flex flex-col md:flex-row items-center justify-between text-[8px] md:text-[10px] text-white font-black uppercase tracking-[0.2em] bg-[#050505] relative z-[100] gap-2 md:gap-0 mt-20">
-        <div>&copy; 2024 BUY_WISE_INTEL_HUB.</div>
-        <div className="flex flex-wrap justify-center gap-4 md:gap-12 opacity-50 md:opacity-100">
-          <span className="flex items-center gap-2 md:gap-3"><div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-[#FF3B30] animate-pulse"></div> SYSTEM_READY</span>
-          <span className="text-white/30 hidden sm:inline-block">AES_256_ACTIVE</span>
-          <span className="text-white/30 hidden sm:inline-block">GATEWAY: INDIA_001</span>
+      <footer className="w-full py-8 border-t border-gray-200 mt-20 flex flex-col md:flex-row items-center justify-between text-sm text-gray-500 font-medium px-4 md:px-16 bg-white/50 backdrop-blur-md">
+        <div>&copy; {new Date().getFullYear()} BuyWise. All rights reserved.</div>
+        <div className="flex flex-wrap justify-center gap-6 mt-4 md:mt-0">
+          <a href="#" className="hover:text-indigo-600 transition-colors">Privacy Policy</a>
+          <a href="#" className="hover:text-indigo-600 transition-colors">Terms of Service</a>
+          <a href="#" className="hover:text-indigo-600 transition-colors">Support</a>
         </div>
       </footer>
 
